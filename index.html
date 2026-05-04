@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FG-Lab: Enrique Juárez Division</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <style>
+        body { background-color: #050505; color: #00ff41; font-family: 'Courier New', monospace; padding: 20px; }
+        .container { max-width: 500px; margin: 0 auto; border: 1px solid #00ff41; padding: 25px; background: #0d0d0d; border-radius: 8px; }
+        h1 { color: #ff9900; text-align: center; font-size: 1.4rem; margin-bottom: 5px; }
+        label { display: block; margin-top: 15px; color: #ff9900; font-size: 0.75rem; font-weight: bold; }
+        input, select, textarea { width: 100%; background: #1a1a1a; border: 1px solid #00ff41; color: #00ff41; padding: 12px; margin-top: 5px; box-sizing: border-box; font-size: 16px; border-radius: 4px; }
+        .grid-inputs { display: grid; grid-template-columns: 1fr 2fr; gap: 15px; }
+        .btn-execute { margin-top: 30px; width: 100%; padding: 20px; background: transparent; color: #ff9900; border: 2px solid #ff9900; font-weight: bold; cursor: pointer; text-transform: uppercase; font-size: 1rem; }
+        .btn-execute:hover { background: #ff9900; color: #000; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>FUTURE GADGET LAB</h1>
+    <form id="claseForm">
+        <div class="grid-inputs">
+            <div>
+                <label>Clase N°</label>
+                <input type="number" id="numClase" value="1">
+            </div>
+            <div>
+                <label>Grado</label>
+                <select id="grado">
+                    <option value="1° Grado">1° Grado</option>
+                    <option value="2° Grado">2° Grado</option>
+                    <option value="3° Grado">3° Grado</option>
+                    <option value="4° Grado">4° Grado</option>
+                    <option value="5° Grado">5° Grado</option>
+                    <option value="6° Grado" selected>6° Grado</option>
+                    <option value="7° Grado">7° Grado</option>
+                    <option value="8° Grado">8° Grado</option>
+                    <option value="9° Grado">9° Grado</option>
+                </select>
+            </div>
+        </div>
+
+        <label>Asignatura</label>
+        <input type="text" id="asignatura" value="Informática">
+        <label>Fecha</label>
+        <input type="text" id="fecha">
+        <label>Tema de la clase</label>
+        <input type="text" id="tema" placeholder="Ej: Redes Informáticas">
+        <label>Desarrollo</label>
+        <textarea id="desarrollo" rows="6"></textarea>
+        <label>Tareas o Actividades</label>
+        <textarea id="tareas" rows="3"></textarea>
+
+        <button type="button" class="btn-execute" onclick="iniciarProceso()">Execute Operation</button>
+    </form>
+</div>
+
+<script>
+    window.onload = function() {
+        const opciones = { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' };
+        document.getElementById('fecha').value = new Date().toLocaleDateString('es-ES', opciones);
+    };
+
+    function iniciarProceso() {
+        try {
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
+            
+            const d = {
+                num: document.getElementById('numClase').value,
+                grado: document.getElementById('grado').value,
+                asignatura: document.getElementById('asignatura').value,
+                fecha: document.getElementById('fecha').value,
+                tema: (document.getElementById('tema').value || "Sin_Tema").toUpperCase(),
+                desarrollo: document.getElementById('desarrollo').value,
+                tareas: document.getElementById('tareas').value.trim()
+            };
+
+            let sugerencia = `(Clase ${d.num})[${d.tema}] ${d.fecha} - ${d.grado}`;
+            let nombreFinal = prompt("Nombre del archivo:", sugerencia);
+            if (!nombreFinal) return;
+
+            const img = new Image();
+            img.src = 'logo.png'; 
+
+            img.onload = () => generarPDF(doc, img, d, nombreFinal);
+            img.onerror = () => generarPDF(doc, null, d, nombreFinal);
+
+        } catch (e) { alert("Error: " + e.message); }
+    }
+
+    // Portada principal
+    function dibujarPortada(doc, img, data) {
+        if (img) doc.addImage(img, 'PNG', 15, 15, 30, 30);
+        doc.setFont("helvetica", "bold");
+        doc.setFontSize(16);
+        doc.setTextColor(0, 38, 99); 
+        doc.text("Liceo Francisco López Ramos", 50, 25);
+        doc.setFontSize(10);
+        doc.setTextColor(0, 0, 0);
+        doc.setFont("helvetica", "normal");
+        doc.text(`Docente: Enrique Juárez`, 50, 31);
+        doc.text(`Asignatura: ${data.asignatura}`, 50, 36);
+        doc.text(`Grado: ${data.grado}`, 50, 41);
+        doc.text(`Fecha: ${data.fecha}`, 50, 46);
+        doc.setDrawColor(0, 38, 99);
+        doc.line(15, 50, 195, 50);
+    }
+
+    // Encabezado simple para páginas 2 en adelante
+    function dibujarMiniHeader(doc, data) {
+        doc.setFont("helvetica", "italic");
+        doc.setFontSize(8);
+        doc.setTextColor(100, 100, 100);
+        doc.text(`Liceo Francisco López Ramos - ${data.tema}`, 15, 12);
+        doc.line(15, 14, 195, 14);
+    }
+
+    function generarPDF(doc, img, data, nombreArchivo) {
+        dibujarPortada(doc, img, data);
+        
+        let y = 62;
+        const margenInf = 280;
+        const margenIzq = 15;
+        const anchoUtil = 175;
+
+        // TEMA
+        doc.setFont("helvetica", "bold");
+        doc.setFontSize(14);
+        doc.setTextColor(160, 0, 0);
+        const lineasTema = doc.splitTextToSize("TEMA: " + data.tema, anchoUtil);
+        doc.text(lineasTema, margenIzq, y);
+        y += (lineasTema.length * 8) + 10;
+
+        // DESARROLLO
+        doc.setTextColor(0, 0, 0);
+        doc.setFontSize(12);
+        doc.setFont("helvetica", "bold");
+        doc.text("DESARROLLO DE CLASE:", margenIzq, y);
+        y += 8;
+
+        doc.setFont("helvetica", "normal");
+        doc.setFontSize(11);
+        const lineasDes = doc.splitTextToSize(data.desarrollo, anchoUtil);
+
+        for (let i = 0; i < lineasDes.length; i++) {
+            if (y > margenInf) {
+                doc.addPage();
+                dibujarMiniHeader(doc, data); // Encabezado pequeño
+                y = 22; // Empezamos más arriba en páginas nuevas
+                doc.setFont("helvetica", "normal");
+                doc.setFontSize(11);
+                doc.setTextColor(0, 0, 0);
+            }
+            doc.text(lineasDes[i], margenIzq, y);
+            y += 7;
+        }
+
+        y += 10;
+
+        // TAREAS
+        if (y > margenInf - 25) {
+            doc.addPage();
+            dibujarMiniHeader(doc, data);
+            y = 22;
+        }
+
+        doc.setFont("helvetica", "bold");
+        doc.setFontSize(12);
+        doc.text("TAREAS O ACTIVIDADES:", margenIzq, y);
+        y += 8;
+        
+        doc.setFont("helvetica", "normal");
+        doc.setFontSize(11);
+        const txtTareas = data.tareas !== "" ? data.tareas : "No se han asignado tareas o actividades.";
+        const lineasTar = doc.splitTextToSize(txtTareas, anchoUtil);
+        
+        for (let j = 0; j < lineasTar.length; j++) {
+            if (y > margenInf) {
+                doc.addPage();
+                dibujarMiniHeader(doc, data);
+                y = 22;
+                doc.setFont("helvetica", "normal");
+                doc.setFontSize(11);
+            }
+            doc.text(lineasTar[j], margenIzq, y);
+            y += 7;
+        }
+
+        doc.save(nombreArchivo + ".pdf");
+    }
+</script>
+</body>
+</html>
