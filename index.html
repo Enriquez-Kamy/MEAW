@@ -2,194 +2,230 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FG-Lab: Enrique Juárez Division</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Liceo Dashboard - Enrique Juárez</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Ubuntu:wght@400;700&display=swap" rel="stylesheet">
     <style>
-        body { background-color: #050505; color: #00ff41; font-family: 'Courier New', monospace; padding: 20px; }
-        .container { max-width: 500px; margin: 0 auto; border: 1px solid #00ff41; padding: 25px; background: #0d0d0d; border-radius: 8px; }
-        h1 { color: #ff9900; text-align: center; font-size: 1.4rem; margin-bottom: 5px; }
-        label { display: block; margin-top: 15px; color: #ff9900; font-size: 0.75rem; font-weight: bold; }
-        input, select, textarea { width: 100%; background: #1a1a1a; border: 1px solid #00ff41; color: #00ff41; padding: 12px; margin-top: 5px; box-sizing: border-box; font-size: 16px; border-radius: 4px; }
-        .grid-inputs { display: grid; grid-template-columns: 1fr 2fr; gap: 15px; }
-        .btn-execute { margin-top: 30px; width: 100%; padding: 20px; background: transparent; color: #ff9900; border: 2px solid #ff9900; font-weight: bold; cursor: pointer; text-transform: uppercase; font-size: 1rem; }
-        .btn-execute:hover { background: #ff9900; color: #000; }
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        body { background-color: #000; color: #e7e9ea; font-family: 'Ubuntu', sans-serif; margin: 0; padding: 15px; display: flex; flex-direction: column; align-items: center; }
+        .app-container { width: 100%; max-width: 450px; padding-bottom: 40px; }
+        
+        .top-bar { border-bottom: 1px solid #2f3336; padding: 15px 0; margin-bottom: 20px; }
+        .top-bar h1 { font-size: 20px; font-weight: 700; margin: 0; }
+
+        .input-group { margin-bottom: 18px; }
+        label { display: block; font-size: 12px; color: #71767b; margin-bottom: 6px; font-weight: 700; text-transform: uppercase; }
+        input, select, textarea { width: 100%; background: #000; border: 1px solid #2f3336; color: #e7e9ea; padding: 12px; border-radius: 8px; font-size: 16px; font-family: inherit; }
+        input:focus, textarea:focus { border-color: #1d9bf0; outline: none; }
+        
+        .quick-actions { display: flex; gap: 8px; margin-bottom: 10px; flex-wrap: wrap; }
+        .btn-pill { background: #1d9bf0; color: #fff; border: none; padding: 8px 16px; border-radius: 20px; font-size: 13px; font-weight: 700; cursor: pointer; }
+        .btn-pill.secondary { background: #2f3336; }
+        
+        .btn-post { width: 100%; background: #eff3f4; color: #0f1419; border: none; padding: 16px; border-radius: 30px; font-size: 17px; font-weight: 700; cursor: pointer; margin-top: 15px; }
     </style>
 </head>
 <body>
 
-<div class="container">
-    <h1>FUTURE GADGET LAB</h1>
+<div class="app-container">
+    <div class="top-bar"><h1>Nueva Planificación</h1></div>
+
     <form id="claseForm">
-        <div class="grid-inputs">
-            <div>
-                <label>Clase N°</label>
-                <input type="number" id="numClase" value="1">
-            </div>
-            <div>
+        <div class="input-group">
+            <label>Docente</label>
+            <input type="text" id="docente" value="Enrique Juárez">
+        </div>
+
+        <div style="display: flex; gap: 10px; margin-bottom: 5px;">
+            <div class="input-group" style="flex: 1.2; margin-bottom: 0;">
                 <label>Grado</label>
                 <select id="grado">
-                    <option value="1° Grado">1° Grado</option>
-                    <option value="2° Grado">2° Grado</option>
-                    <option value="3° Grado">3° Grado</option>
-                    <option value="4° Grado">4° Grado</option>
-                    <option value="5° Grado">5° Grado</option>
-                    <option value="6° Grado" selected>6° Grado</option>
-                    <option value="7° Grado">7° Grado</option>
-                    <option value="8° Grado">8° Grado</option>
-                    <option value="9° Grado">9° Grado</option>
+                    <option value="Primero">1° Grado</option>
+                    <option value="Segundo">2° Grado</option>
+                    <option value="Tercero">3° Grado</option>
+                    <option value="Cuarto" selected>4° Grado</option>
+                    <option value="Quinto">5° Grado</option>
+                    <option value="Sexto">6° Grado</option>
+                    <option value="Séptimo">7° Grado</option>
+                    <option value="Octavo">8° Grado</option>
+                    <option value="Noveno">9° Grado</option>
                 </select>
+            </div>
+            <div class="input-group" style="flex: 1.8; margin-bottom: 0;">
+                <label>Asignatura</label>
+                <input type="text" id="asignatura" value="Informática">
             </div>
         </div>
 
-        <label>Asignatura</label>
-        <input type="text" id="asignatura" value="Informática">
-        <label>Fecha</label>
-        <input type="text" id="fecha">
-        <label>Tema de la clase</label>
-        <input type="text" id="tema" placeholder="Ej: Redes Informáticas">
-        <label>Desarrollo</label>
-        <textarea id="desarrollo" rows="6"></textarea>
-        <label>Tareas o Actividades</label>
-        <textarea id="tareas" rows="3"></textarea>
+        <div class="input-group" style="margin-top: 5px;">
+            <label>Materias Rápidas</label>
+            <div class="quick-actions">
+                <button type="button" class="btn-pill secondary" onclick="v('asignatura','Matemática')">Mate</button>
+                <button type="button" class="btn-pill secondary" onclick="v('asignatura','Informática')">Info</button>
+                <button type="button" class="btn-pill secondary" onclick="v('asignatura','Inglés')">Inglés</button>
+                <button type="button" class="btn-pill secondary" onclick="v('asignatura','Moral')">Moral</button>
+                <button type="button" class="btn-pill secondary" onclick="v('asignatura','Formación Cristiana')">Formación Cristiana</button>
+            </div>
+        </div>
 
-        <button type="button" class="btn-execute" onclick="iniciarProceso()">Execute Operation</button>
+        <div style="display: flex; gap: 10px;">
+            <div class="input-group" style="flex: 1;">
+                <label>N° de Clase</label>
+                <input type="number" id="numClase" value="1" min="1">
+            </div>
+            <div class="input-group" style="flex: 2;">
+                <label>Fecha Manual / Automática</label>
+                <input type="text" id="fecha">
+            </div>
+        </div>
+
+        <div class="input-group">
+            <label>Tema de la Clase</label>
+            <input type="text" id="tema" placeholder="EJ: PARTES DE LA COMPUTADORA">
+        </div>
+
+        <div class="input-group">
+            <label>Desarrollo (ChatGPT)</label>
+            <textarea id="desarrollo" rows="6" placeholder="Pega aquí el contenido de la clase..."></textarea>
+        </div>
+
+        <div class="input-group">
+            <label>Tarea / Actividad</label>
+            <textarea id="tarea" rows="2" placeholder="Ej: Dibujar el monitor en el cuaderno."></textarea>
+        </div>
+
+        <button type="button" class="btn-post" onclick="generarPDF()">Generar PDF Oficial</button>
     </form>
 </div>
 
 <script>
-    window.onload = function() {
-        const opciones = { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' };
-        document.getElementById('fecha').value = new Date().toLocaleDateString('es-ES', opciones);
-    };
+    // Carga inicial automática de la fecha actual
+    const opciones = { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' };
+    document.getElementById('fecha').value = new Date().toLocaleDateString('es-ES', opciones);
 
-    function iniciarProceso() {
-        try {
-            const { jsPDF } = window.jspdf;
-            const doc = new jsPDF();
+    function v(id, val) { document.getElementById(id).value = val; }
+
+    function generarPDF() {
+        const { jsPDF } = window.jspdf;
+        const doc = new jsPDF();
+
+        // Conversión a formato corto para usar de forma estricta en el nombre del archivo
+        const conversionCorto = {
+            "Primero": "1°",
+            "Segundo": "2°",
+            "Tercero": "3°",
+            "Cuarto": "4°",
+            "Quinto": "5°",
+            "Sexto": "6°",
+            "Séptimo": "7°",
+            "Octavo": "8°",
+            "Noveno": "9°"
+        };
+
+        const gradoTextoCompleto = document.getElementById('grado').value;
+        const gradoFormatoCorto = conversionCorto[gradoTextoCompleto] || "4°";
+
+        const data = {
+            docente: document.getElementById('docente').value,
+            gradoPdf: gradoTextoCompleto,       
+            gradoArchivo: gradoFormatoCorto,    
+            asignatura: document.getElementById('asignatura').value,
+            numClase: document.getElementById('numClase').value,
+            tema: document.getElementById('tema').value.toUpperCase(),
+            desarrollo: document.getElementById('desarrollo').value,
+            tarea: document.getElementById('tarea').value,
+            fecha: document.getElementById('fecha').value   
+        };
+
+        const img = new Image();
+        img.src = 'logo.png'; 
+        img.onload = () => build(doc, img, data);
+        img.onerror = () => build(doc, null, data);
+    }
+
+    // Función modificada: Encabezado minimalista, cursivo y gris suave
+    function agregarEncabezadoGrisSuave(doc, data) {
+        // helvetica + oblique/italic para ese look medio cursivo elegante
+        doc.setFont("helvetica", "oblique").setFontSize(10).setTextColor(180, 180, 180); // Gris muy suave
+        
+        // Muestra únicamente el Colegio y el Tema de la clase
+        doc.text(`Liceo Francisco López Ramos  —  Tema: ${data.tema.substring(0, 45)}`, 15, 15);
+        
+        // Línea divisoria en un gris extra tenue
+        doc.setDrawColor(220, 220, 220).setLineWidth(0.2).line(15, 18, 195, 18);
+    }
+
+    function build(doc, img, data) {
+        // --- CABECERA OFICIAL DE LA PRIMERA PÁGINA ---
+        if (img) doc.addImage(img, 'PNG', 15, 15, 35, 35);
+        
+        doc.setFont("helvetica", "bold").setFontSize(18).setTextColor(0, 38, 99); // Azul Oficial Liceo
+        doc.text("Liceo Francisco López Ramos", 55, 25);
+        
+        doc.setFontSize(11).setFont("helvetica", "normal").setTextColor(0, 0, 0); 
+        doc.text(`Docente: ${data.docente}`, 55, 33);
+        doc.text(`Asignatura: ${data.asignatura}`, 55, 38); 
+        doc.text(`Grado: ${data.gradoPdf}`, 55, 43); 
+        doc.text(`Fecha: ${data.fecha}`, 55, 48);
+
+        // Línea divisoria azul de la primera página
+        doc.setDrawColor(0, 38, 99).setLineWidth(0.5).line(15, 55, 195, 55);
+
+        // --- CUERPO ---
+        let y = 65;
+        doc.setFont("helvetica", "bold").setFontSize(13).setTextColor(160, 0, 0); // Rojo para tema
+        doc.text("TEMA: " + data.tema, 15, y);
+        
+        y += 12;
+        doc.setFontSize(12).setTextColor(0, 0, 0).text("DESARROLLO DE CLASE:", 15, y);
+        
+        y += 8;
+        doc.setFont("helvetica", "normal").setFontSize(11).setTextColor(0, 0, 0);
+        
+        const lineas = doc.splitTextToSize(data.desarrollo, 175);
+        lineas.forEach(l => {
+            if (y > 270) { 
+                doc.addPage(); 
+                agregarEncabezadoGrisSuave(doc, data); // Llama al nuevo estilo suave y cursivo
+                y = 28; // Margen optimizado para no chocar con la línea tenue superior
+                doc.setFont("helvetica", "normal").setFontSize(11).setTextColor(0, 0, 0);
+            }
+            doc.text(l, 15, y); 
+            y += 6.5;
+        });
+
+        // --- APARTADO DE TAREAS ---
+        if (data.tarea) {
+            y += 10;
+            if (y > 270) { 
+                doc.addPage(); 
+                agregarEncabezadoGrisSuave(doc, data);
+                y = 28; 
+            }
             
-            const d = {
-                num: document.getElementById('numClase').value,
-                grado: document.getElementById('grado').value,
-                asignatura: document.getElementById('asignatura').value,
-                fecha: document.getElementById('fecha').value,
-                tema: (document.getElementById('tema').value || "Sin_Tema").toUpperCase(),
-                desarrollo: document.getElementById('desarrollo').value,
-                tareas: document.getElementById('tareas').value.trim()
-            };
-
-            let sugerencia = `(Clase ${d.num})[${d.tema}] ${d.fecha} - ${d.grado}`;
-            let nombreFinal = prompt("Nombre del archivo:", sugerencia);
-            if (!nombreFinal) return;
-
-            const img = new Image();
-            img.src = 'logo.png'; 
-
-            img.onload = () => generarPDF(doc, img, d, nombreFinal);
-            img.onerror = () => generarPDF(doc, null, d, nombreFinal);
-
-        } catch (e) { alert("Error: " + e.message); }
-    }
-
-    // Portada principal
-    function dibujarPortada(doc, img, data) {
-        if (img) doc.addImage(img, 'PNG', 15, 15, 30, 30);
-        doc.setFont("helvetica", "bold");
-        doc.setFontSize(16);
-        doc.setTextColor(0, 38, 99); 
-        doc.text("Liceo Francisco López Ramos", 50, 25);
-        doc.setFontSize(10);
-        doc.setTextColor(0, 0, 0);
-        doc.setFont("helvetica", "normal");
-        doc.text(`Docente: Enrique Juárez`, 50, 31);
-        doc.text(`Asignatura: ${data.asignatura}`, 50, 36);
-        doc.text(`Grado: ${data.grado}`, 50, 41);
-        doc.text(`Fecha: ${data.fecha}`, 50, 46);
-        doc.setDrawColor(0, 38, 99);
-        doc.line(15, 50, 195, 50);
-    }
-
-    // Encabezado simple para páginas 2 en adelante
-    function dibujarMiniHeader(doc, data) {
-        doc.setFont("helvetica", "italic");
-        doc.setFontSize(8);
-        doc.setTextColor(100, 100, 100);
-        doc.text(`Liceo Francisco López Ramos - ${data.tema}`, 15, 12);
-        doc.line(15, 14, 195, 14);
-    }
-
-    function generarPDF(doc, img, data, nombreArchivo) {
-        dibujarPortada(doc, img, data);
-        
-        let y = 62;
-        const margenInf = 280;
-        const margenIzq = 15;
-        const anchoUtil = 175;
-
-        // TEMA
-        doc.setFont("helvetica", "bold");
-        doc.setFontSize(14);
-        doc.setTextColor(160, 0, 0);
-        const lineasTema = doc.splitTextToSize("TEMA: " + data.tema, anchoUtil);
-        doc.text(lineasTema, margenIzq, y);
-        y += (lineasTema.length * 8) + 10;
-
-        // DESARROLLO
-        doc.setTextColor(0, 0, 0);
-        doc.setFontSize(12);
-        doc.setFont("helvetica", "bold");
-        doc.text("DESARROLLO DE CLASE:", margenIzq, y);
-        y += 8;
-
-        doc.setFont("helvetica", "normal");
-        doc.setFontSize(11);
-        const lineasDes = doc.splitTextToSize(data.desarrollo, anchoUtil);
-
-        for (let i = 0; i < lineasDes.length; i++) {
-            if (y > margenInf) {
-                doc.addPage();
-                dibujarMiniHeader(doc, data); // Encabezado pequeño
-                y = 22; // Empezamos más arriba en páginas nuevas
-                doc.setFont("helvetica", "normal");
-                doc.setFontSize(11);
-                doc.setTextColor(0, 0, 0);
-            }
-            doc.text(lineasDes[i], margenIzq, y);
+            doc.setFont("helvetica", "bold").setFontSize(11).setTextColor(0, 38, 99); // Encabezado de Tarea en Azul
+            doc.text("TAREA / ACTIVIDAD:", 15, y);
+            
             y += 7;
+            doc.setFont("helvetica", "normal").setFontSize(11).setTextColor(0, 0, 0);
+            
+            const tLineas = doc.splitTextToSize(data.tarea, 175);
+            tLineas.forEach(l => { 
+                if (y > 270) { 
+                    doc.addPage(); 
+                    agregarEncabezadoGrisSuave(doc, data);
+                    y = 28; 
+                    doc.setFont("helvetica", "normal").setFontSize(11).setTextColor(0, 0, 0);
+                }
+                doc.text(l, 15, y); 
+                y += 6.5; 
+            });
         }
 
-        y += 10;
-
-        // TAREAS
-        if (y > margenInf - 25) {
-            doc.addPage();
-            dibujarMiniHeader(doc, data);
-            y = 22;
-        }
-
-        doc.setFont("helvetica", "bold");
-        doc.setFontSize(12);
-        doc.text("TAREAS O ACTIVIDADES:", margenIzq, y);
-        y += 8;
-        
-        doc.setFont("helvetica", "normal");
-        doc.setFontSize(11);
-        const txtTareas = data.tareas !== "" ? data.tareas : "No se han asignado tareas o actividades.";
-        const lineasTar = doc.splitTextToSize(txtTareas, anchoUtil);
-        
-        for (let j = 0; j < lineasTar.length; j++) {
-            if (y > margenInf) {
-                doc.addPage();
-                dibujarMiniHeader(doc, data);
-                y = 22;
-                doc.setFont("helvetica", "normal");
-                doc.setFontSize(11);
-            }
-            doc.text(lineasTar[j], margenIzq, y);
-            y += 7;
-        }
-
-        doc.save(nombreArchivo + ".pdf");
+        // Estructura de nombre exacta: (Clase X) [TEMA] - fecha - 9°.pdf
+        const nombreArchivo = `(Clase ${data.numClase}) ${data.tema} - ${data.fecha} - ${data.gradoArchivo}.pdf`;
+        doc.save(nombreArchivo);
     }
 </script>
 </body>
